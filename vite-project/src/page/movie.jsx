@@ -75,7 +75,6 @@ const Movie = () => {
           duration: 5000,
           isClosable: true,
         });
-        console.log(e);
       });
   };
 

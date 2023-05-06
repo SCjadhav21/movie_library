@@ -43,8 +43,8 @@ const Library = () => {
   const navigate = useNavigate();
   const toast = useToast();
 
-  const [searchBy, setSearchBy] = useState("");
-  const [inputv, setInputv] = useState("");
+  const [sortBy, setSortBy] = useState("title");
+  const [order, setOrder] = useState("asc");
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = React.useRef();
@@ -52,10 +52,20 @@ const Library = () => {
   const [data, setData] = useState();
   const [loading, setLoding] = useState(true);
 
-  const getCollection = async (id) => {
+  const getCollection = async () => {
     let res = await axios.get(`https://movie-json.onrender.com/library`);
     setData(res.data);
     setLoding(false);
+  };
+
+  const getSortedCollection = async () => {
+    setLoding(true);
+    let res = await axios.get(
+      `https://movie-json.onrender.com/library?_sort=${sortBy}&_order=${order}`
+    );
+    setData(res.data);
+    setLoding(false);
+    onClose();
   };
 
   const deleteMovie = (id) => {
@@ -220,32 +230,27 @@ const Library = () => {
       </TableContainer>
       <Drawer
         isOpen={isOpen}
-        placement="left"
+        placement="bottom"
         onClose={onClose}
         finalFocusRef={btnRef}
       >
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>Search What You Want</DrawerHeader>
+          <DrawerHeader>Sort What You Want</DrawerHeader>
 
           <DrawerBody display={"flex"} flexDir={"column"} gap={5}>
-            <Select
-              value={searchBy}
-              onChange={(e) => setSearchBy(e.target.value)}
-            >
-              <option value="">Search by Keyword</option>
+            <Select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
               <option value="title">Search by Title</option>
               <option value="director">Search by Director</option>
               <option value="year">Search by Year</option>
               <option value="genre">Search by Genre</option>
             </Select>
-            <Input
-              value={inputv}
-              onChange={(e) => setInputv(e.target.value)}
-              placeholder="search here"
-            />
-            {/* <Button onClick={handelClick}>Search</Button> */}
+            <Select value={order} onChange={(e) => setOrder(e.target.value)}>
+              <option value="asc">Ascending</option>
+              <option value="desc">Descending</option>
+            </Select>
+            <Button onClick={getSortedCollection}>Sort</Button>
           </DrawerBody>
 
           <DrawerFooter>
