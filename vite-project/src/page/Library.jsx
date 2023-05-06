@@ -4,10 +4,7 @@ import {
   Box,
   Img,
   Button,
-  Input,
   Select,
-  SimpleGrid,
-  Text,
   Drawer,
   DrawerBody,
   DrawerFooter,
@@ -18,28 +15,22 @@ import {
   useDisclosure,
   Stack,
   Skeleton,
-  Heading,
-  Center,
   useToast,
   Td,
   Tr,
   Tbody,
   Th,
   Thead,
-  TableCaption,
   Table,
   TableContainer,
-  Tfoot,
 } from "@chakra-ui/react";
 
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 
 import axios from "axios";
+import EditMovie from "./EditMovie";
 
 const Library = () => {
-  const store = useSelector((store) => store);
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const toast = useToast();
 
@@ -52,10 +43,18 @@ const Library = () => {
   const [data, setData] = useState();
   const [loading, setLoding] = useState(true);
 
+  const [edit, setEdit] = useState(false);
+  const [editObj, setEditObj] = useState("");
+
   const getCollection = async () => {
     let res = await axios.get(`https://movie-json.onrender.com/library`);
     setData(res.data);
     setLoding(false);
+  };
+
+  const resetFilters = () => {
+    getCollection();
+    onClose();
   };
 
   const getSortedCollection = async () => {
@@ -105,6 +104,10 @@ const Library = () => {
           });
         });
     }
+  };
+
+  const seeMovie = (id) => {
+    navigate(`/${id}`);
   };
 
   useEffect(() => {
@@ -163,7 +166,8 @@ const Library = () => {
   return (
     <Box
       minH={"100vh"}
-      // bgColor={"white.100"}
+      backgroundRepeat={"no-repeat"}
+      backgroundSize={"cover"}
       backgroundImage={
         "https://images.unsplash.com/photo-1582738411706-bfc8e691d1c2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTF8fHdoaXRlfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=1000&q=60"
       }
@@ -203,13 +207,23 @@ const Library = () => {
                     />
                   </Td>
 
-                  <Td>{el.title}</Td>
-                  <Td> {el.director}</Td>
-                  <Td> {el.year}</Td>
-                  <Td> {el.genres.join(", ")}</Td>
+                  <Td onClick={() => seeMovie(el.id)}>{el.title}</Td>
+                  <Td onClick={() => seeMovie(el.id)}> {el.director}</Td>
+                  <Td onClick={() => seeMovie(el.id)}> {el.year}</Td>
+                  <Td onClick={() => seeMovie(el.id)}>
+                    {" "}
+                    {el.genres.join(", ")}
+                  </Td>
 
                   <Td>
-                    <Button variant={"outline"} colorScheme="blue">
+                    <Button
+                      onClick={() => {
+                        setEdit(true);
+                        setEditObj(el);
+                      }}
+                      variant={"outline"}
+                      colorScheme="blue"
+                    >
                       Edit
                     </Button>
                   </Td>
@@ -241,28 +255,37 @@ const Library = () => {
 
           <DrawerBody display={"flex"} flexDir={"column"} gap={5}>
             <Select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-              <option value="title">Search by Title</option>
-              <option value="director">Search by Director</option>
-              <option value="year">Search by Year</option>
-              <option value="genre">Search by Genre</option>
+              <option value="title">Sort by Title</option>
+              <option value="director">Sort by Director</option>
+              <option value="year">Sort by Year</option>
+              <option value="genre">Sort by Genre</option>
             </Select>
             <Select value={order} onChange={(e) => setOrder(e.target.value)}>
               <option value="asc">Ascending</option>
               <option value="desc">Descending</option>
             </Select>
-            <Button onClick={getSortedCollection}>Sort</Button>
+            <Button
+              variant="outline"
+              colorScheme="blue"
+              onClick={getSortedCollection}
+            >
+              Sort
+            </Button>
           </DrawerBody>
 
           <DrawerFooter>
             <Button variant="outline" mr={3} onClick={onClose}>
               Cancel
             </Button>
-            {/* <Button colorScheme="blue" onClick={resetFilters}>
+            <Button variant="outline" colorScheme="blue" onClick={resetFilters}>
               Reset Filters
-            </Button> */}
+            </Button>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
+      {edit && (
+        <EditMovie getData={getCollection} setEdit={setEdit} data={editObj} />
+      )}
     </Box>
   );
 };

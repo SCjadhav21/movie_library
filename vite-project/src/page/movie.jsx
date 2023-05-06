@@ -59,8 +59,8 @@ const Movie = () => {
           });
         } else {
           toast({
-            title: "Movie alredy added to library",
-            description: "alredy existed",
+            title: "Movie already added to library",
+            description: "already existed",
             status: "error",
             duration: 5000,
             isClosable: true,
@@ -69,8 +69,8 @@ const Movie = () => {
       })
       .catch((e) => {
         toast({
-          title: "Movie alredy added to library",
-          description: "alredy existed",
+          title: "Movie already added to library",
+          description: "already existed",
           status: "error",
           duration: 5000,
           isClosable: true,
@@ -143,6 +143,8 @@ const Movie = () => {
   return (
     <Box
       minH={"100vh"}
+      backgroundRepeat={"no-repeat"}
+      backgroundSize={"cover"}
       backgroundImage={
         "https://images.unsplash.com/photo-1535446937720-e4cad0145efe?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NXx8bW92aWVzJTIwcG9zdGVyc3xlbnwwfHwwfHw%3D&auto=format&fit=crop&w=1000&q=60"
       }

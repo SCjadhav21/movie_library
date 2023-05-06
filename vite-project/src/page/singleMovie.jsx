@@ -93,6 +93,8 @@ const SingleMovie = () => {
   }
   return (
     <Center
+      backgroundRepeat={"no-repeat"}
+      backgroundSize={"cover"}
       bgImage={
         "https://images.unsplash.com/photo-1683123852097-c09667eef231?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwxNTZ8fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=600&q=60"
       }
